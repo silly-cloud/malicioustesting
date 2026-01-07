@@ -19,10 +19,12 @@ jobs:
           # Build the Docker image with the "vulnerable" tag
           docker build -t ghcr.io/malicioustesting/malicioustesting:vulnerable .
 
-      - name: Authenticate Docker to GHCR
+      - name: Authenticate Docker to GHCR (Debugging Step)
         run: |
-          # Login to GitHub Container Registry using GitHub PAT
+          echo "Attempting to log in to GHCR..."
           echo ${{ secrets.GHCR_PAT }} | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+          # Check if login was successful by running a simple Docker command
+          docker info
 
       - name: Push Docker image to GHCR
         run: |
@@ -35,11 +37,10 @@ jobs:
     steps:
       - name: Authenticate Docker to GHCR (Deploy)
         run: |
-          # Authenticate Docker again to pull the image for deployment
           echo ${{ secrets.GHCR_PAT }} | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+          docker info
 
       - name: Pull and deploy the Docker image
         run: |
-          # Pull and run the Docker image using the "vulnerable" tag
           docker pull ghcr.io/malicioustesting/malicioustesting:vulnerable
           docker run -d ghcr.io/malicioustesting/malicioustesting:vulnerable
