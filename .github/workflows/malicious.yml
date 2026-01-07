@@ -17,5 +17,5 @@ jobs:
     runs-on: self-hosted
     steps:
       - run: |
-          docker pull ghcr.io/$GITHUB_REPOSITORY:vulnerable
-          docker run --rm ghcr.io/$GITHUB_REPOSITORY:vulnerable  # Outputs "CLEAN" initially
+          docker build -t ghcr.io/${{ github.repository_owner }}/${{ github.repository | downcase }}:vulnerable .
+          docker push ghcr.io/${{ github.repository_owner }}/${{ github.repository | downcase }}:vulnerable
