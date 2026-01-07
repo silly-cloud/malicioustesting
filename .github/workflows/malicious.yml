@@ -12,7 +12,7 @@ jobs:
       - name: Build Docker image
         run: |
           echo 'FROM ubuntu:22.04\nCMD ["echo", "Safe Artifact"]' > Dockerfile
-          docker build -t ghcr.io/$GITHUB_REPOSITORY:vulnerable .
+          docker build -t ghcr.io/malicioustesting:vulnerable .
         
       - name: Authenticate Docker to GitHub Container Registry
         run: |
@@ -20,7 +20,7 @@ jobs:
         
       - name: Push Docker image to GHCR
         run: |
-          docker push ghcr.io/$GITHUB_REPOSITORY:vulnerable
+          docker push ghcr.io/malicioustesting:vulnerable
 
   deploy:
     needs: build-push
@@ -32,5 +32,5 @@ jobs:
         
       - name: Deploy the Docker image
         run: |
-          docker pull ghcr.io/$GITHUB_REPOSITORY:vulnerable
-          docker run -d ghcr.io/$GITHUB_REPOSITORY:vulnerable
+          docker pull ghcr.io/malicioustesting:vulnerable
+          docker run -d ghcr.io/malicioustesting:vulnerable
