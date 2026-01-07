@@ -17,7 +17,7 @@ jobs:
       - name: Build Docker image
         run: |
           # Build the Docker image with the "vulnerable" tag
-          docker build -t ghcr.io/malicioustesting/malicioustesting:vulnerable .
+          docker build -t ghcr.io/silly-cloud/malicioustesting:vulnerable .
 
       - name: Authenticate Docker to GHCR (Debugging Step)
         run: |
@@ -29,7 +29,7 @@ jobs:
       - name: Push Docker image to GHCR
         run: |
           # Push the image to GHCR with the "vulnerable" tag
-          docker push ghcr.io/malicioustesting/malicioustesting:vulnerable
+          docker push ghcr.io/silly-cloud/malicioustesting:vulnerable
 
   deploy:
     needs: build-push
@@ -42,5 +42,5 @@ jobs:
 
       - name: Pull and deploy the Docker image
         run: |
-          docker pull ghcr.io/malicioustesting/malicioustesting:vulnerable
-          docker run -d ghcr.io/malicioustesting/malicioustesting:vulnerable
+          docker pull ghcr.io/silly-cloud/malicioustesting:vulnerable
+          docker run -d ghcr.io/silly-cloud/malicioustesting:vulnerable
