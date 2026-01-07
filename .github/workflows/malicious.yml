@@ -1,20 +1,21 @@
-name: Malicious GitHub Action
+name: TOCTOU Vulnerable
 
-on:
-  pull_request_target:
-    types:
-      - opened
-      - synchronize
-      - reopened
+on: [workflow_dispatch]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  build-push:
+    runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}  # Checking out untrusted code
       - run: |
-          npm install && npm test
-        env:
-          AWS_SECRET: ${{ secrets.AWS_SECRET }}  # Passing secrets to untrusted code
+          echo 'FROM ubuntu:22.04\nCMD ["echo", "CLEAN: Safe!"]' > Dockerfile
+          docker build -t ghcr.io/$GITHUB_REPOSITORY:vulnerable .
+          echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+          docker push ghcr.io/$GITHUB_REPOSITORY:vulnerable
+
+  deploy:
+    needs: build-push
+    runs-on: self-hosted
+    steps:
+      - run: |
+          docker pull ghcr.io/$GITHUB_REPOSITORY:vulnerable
+          docker run --rm ghcr.io/$GITHUB_REPOSITORY:vulnerable  # Outputs "CLEAN" initially
